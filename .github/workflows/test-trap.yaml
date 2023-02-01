@@ -5,6 +5,13 @@ on:
   pull_request:
   workflow_dispatch:
 
+# You should always only be running one job that commits changes at a time.
+# Using the git ref as a concurrency flag allows this even with multiple
+# workflows that commit.
+concurrency: ${{ github.ref }}
+
+# In order to push the changes, the workflow needs permission to write to
+# the repository contents.
 permissions:
   contents: write
 
@@ -24,4 +31,4 @@ jobs:
         with:
           fix-commands: | 
             echo $(( $(cat .github/run_count.txt) + 1 )) > .github/run_count.txt
-          commit-message: "Test lint-trap success"
+          commit-message: "TEST: ${{ matrix.os }}, ${{ matrix.fetch-depth }}"
