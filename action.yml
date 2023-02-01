@@ -1,0 +1,40 @@
+name: "Lint Trap"
+description: "A Github Action that removes the lint from your code"
+inputs:
+  fix-commands:
+    description: "Commands to run that run your auto-formatters"
+    required: true
+    default: |
+      make autoformat
+  commit-message:
+    description: "Commit message to use"
+    default: "chore(lint): automatically reformat code with formatting tools"
+  shell:
+    description: "Shell to use to run the auto-formatters"
+    default: bash
+  git-name:
+    description: "Name for Lint Trap to use in git commits."
+    default: "Lint Trap[bot]"
+  git-email:
+    description: "Email for Lint trap in git commits.."
+    default: "lint-trap-bot@bots.noreply.github.com"
+
+runs:
+  using: 'composite'
+  steps:
+    - shell: bash
+      run: |
+        git fetch --force
+    - shell: ${{ inputs.shell }}
+      run: |
+        ${{ inputs.fix-commands }}
+    - shell: bash
+      run: |
+        git config user.name "${{ inputs.git-name }}"
+        git config user.email "${{ inputs.git-email }}"
+        git add --update
+        git commit -m "${{ inputs.commit-message }}"
+        git push
+      env:
+        GH_TOKEN: ${{ github.token }}
+

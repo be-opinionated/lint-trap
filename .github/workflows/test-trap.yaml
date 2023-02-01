@@ -1,0 +1,26 @@
+# GitHub workflow for running automatic linting fixers on your code.
+name: Test that lint trap works as expected.
+
+on:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  run-action:
+    strategy:
+      matrix:
+        os: [ubuntu-latest]
+        fetch-depth: [0, 1]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: ${{ matrix.fetch-depth }}
+      - uses: ./
+        with:
+          fix-commands: | 
+            echo $(( $(cat .github/run_count.txt) + 1 )) > .github/run_count.txt
+          commit-message: "Test lint-trap success"
