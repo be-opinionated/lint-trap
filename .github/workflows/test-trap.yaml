@@ -1,5 +1,5 @@
 # GitHub workflow for running automatic linting fixers on your code.
-name: Test that lint trap works as expected.
+name: Test Lint Trap.
 
 on:
   pull_request:
