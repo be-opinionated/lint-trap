@@ -22,6 +22,12 @@ inputs:
 runs:
   using: 'composite'
   steps:
+    - if: ${{ github.event.pull_request.number }}
+      run: |
+        gh pr checkout ${{ github.event.pull_request.number }}
+      shell: bash
+      env:
+        GITHUB_TOKEN: ${{ github.token }}
     - shell: bash
       run: |
         git fetch --force
