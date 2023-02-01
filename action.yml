@@ -40,8 +40,12 @@ runs:
         git config user.name "${{ inputs.git-name }}"
         git config user.email "${{ inputs.git-email }}"
         git add --update
-        git commit -m "${{ inputs.commit-message }}"
-        git push
+        if [[ $(git diff-index test-and-docs) ]]; then
+          git commit -m "${{ inputs.commit-message }}"
+          git push
+        else
+          echo "::info::No changes to repository, not updating..."
+        fi
       env:
         GH_TOKEN: ${{ github.token }}
 

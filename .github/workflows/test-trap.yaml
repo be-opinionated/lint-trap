@@ -16,7 +16,7 @@ permissions:
   contents: write
 
 jobs:
-  run-action:
+  with-change:
     strategy:
       max-parallel: 1
       matrix:
@@ -32,3 +32,15 @@ jobs:
           fix-commands: | 
             echo $(( $(cat .github/run_count.txt) + 1 )) > .github/run_count.txt
           commit-message: "TEST: ${{ matrix.os }}, ${{ matrix.fetch-depth }}"
+  no-change:
+    strategy:
+      max-parallel: 1
+      matrix:
+        os: [ubuntu-latest]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v3
+      - uses: ./
+        with:
+          fix-commands: echo "Not changing anything"
+          commit-message: "If you see this commit message there was a bug."
