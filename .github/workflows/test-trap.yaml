@@ -11,6 +11,7 @@ permissions:
 jobs:
   run-action:
     strategy:
+      max-parallel: 1
       matrix:
         os: [ubuntu-latest]
         fetch-depth: [0, 1]

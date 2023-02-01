@@ -25,6 +25,7 @@ runs:
     - shell: bash
       run: |
         git fetch --force
+        git pull
     - shell: ${{ inputs.shell }}
       run: |
         ${{ inputs.fix-commands }}
