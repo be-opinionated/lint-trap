@@ -1,15 +1,22 @@
 # GitHub workflow for running automatic linting fixers on your code.
-name: Test that lint trap works as expected.
+name: Test Lint Trap.
 
 on:
   pull_request:
   workflow_dispatch:
 
+# You should always only be running one job that commits changes at a time.
+# Using the git ref as a concurrency flag allows this even with multiple
+# workflows that commit.
+concurrency: ${{ github.ref }}
+
+# In order to push the changes, the workflow needs permission to write to
+# the repository contents.
 permissions:
   contents: write
 
 jobs:
-  run-action:
+  with-change:
     strategy:
       max-parallel: 1
       matrix:
@@ -24,4 +31,16 @@ jobs:
         with:
           fix-commands: | 
             echo $(( $(cat .github/run_count.txt) + 1 )) > .github/run_count.txt
-          commit-message: "Test lint-trap success"
+          commit-message: "TEST: ${{ matrix.os }}, ${{ matrix.fetch-depth }}"
+  no-change:
+    strategy:
+      max-parallel: 1
+      matrix:
+        os: [ubuntu-latest]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v3
+      - uses: ./
+        with:
+          fix-commands: echo "Not changing anything"
+          commit-message: "If you see this commit message there was a bug."
