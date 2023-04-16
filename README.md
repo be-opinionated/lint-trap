@@ -8,6 +8,15 @@ specifically for automatically fixing linting issues. It's not meant to do
 any of that fixing itself, but rather install and run the appropriate tools
 to do so for the user and commit those changes back into the repository.
 
+### Why not use pre-commit?
+
+You should use [pre-commit](https://pre-commit.com/)! In fact, one way to
+use `lint-trap` is to run `pre-commit` against all files in the repository.
+Lint-trap is meant to complement the use of pre-commit by running
+automatic fixes in your CI that may be inappropriate to include in a pre-commit
+hook (perhaps due to the time it takes to run). If you can feasibly use 
+pre-commit instead of lint-trap, you absolutely should!
+
 ## Development
 
 This is in very early development. If you want to use it, make sure you
