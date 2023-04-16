@@ -18,6 +18,9 @@ inputs:
   git-email:
     description: "Email for Lint trap in git commits.."
     default: "lint-trap-bot@bots.noreply.github.com"
+  git-blame-ignore-revs:
+    description: "Name of file to which do add revisions for ignoring. Leave unset if you don't want to ignore lint-trap's commits."
+    default: ""
 
 runs:
   using: 'composite'
@@ -42,6 +45,11 @@ runs:
         git add --update
         if [[ $(git diff-index test-and-docs) ]]; then
           git commit -m "${{ inputs.commit-message }}"
+          if [[ -n "${{ inputs.git-blame-ignore-revs }}" ]]; then
+            ignore_commit=$(git log -n 1 -q | head -n 1 | cut -d' ' -f2)
+            echo "# Lint-trap auto-reformat." > ${{ inputs.git-blame-ignore-revs }}
+            echo "${ignore_commit}" > ${{ inputs.git-blame-ignore-revs }}
+          fi
           git push
         else
           echo "::info::No changes to repository, not updating..."
